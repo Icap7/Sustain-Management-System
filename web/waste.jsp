@@ -6,22 +6,21 @@
     <head>
         <title>Waste Management System</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- Include SweetAlert -->
+
         <style>
             body {
                 background-color: #f8f9fa;
             }
-
             .card {
                 border-radius: 12px;
             }
-
             .card-header {
                 background: linear-gradient(135deg, #007bff, #0056b3);
                 color: white;
                 font-size: 22px;
                 font-weight: bold;
             }
-
             .btn-primary, .btn-info, .btn-secondary {
                 font-size: 18px;
                 font-weight: bold;
@@ -29,19 +28,6 @@
                 border-radius: 8px;
                 width: 100%;
             }
-
-            .btn-primary:hover {
-                background-color: #004085;
-            }
-
-            .btn-info:hover {
-                background-color: #0062cc;
-            }
-
-            .btn-secondary:hover {
-                background-color: #5a6268;
-            }
-
             .button-group {
                 display: flex;
                 gap: 10px;
@@ -50,6 +36,7 @@
     </head>
 
     <body>
+
         <div class="container mt-5">
             <div class="row justify-content-center">
                 <div class="col-md-6">
@@ -109,6 +96,20 @@
 
         <!-- Bootstrap JS (Optional) -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- SweetAlert Success Message -->
+        <script>
+            // Check if the success parameter is present in the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('success') === 'true') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Waste entry added successfully.',
+                    confirmButtonColor: '#007bff'
+                });
+            }
+        </script>
 
     </body>
 </html>

@@ -1,3 +1,4 @@
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,6 +13,7 @@ import model.Waste;
 
 @WebServlet("/WasteServlet")
 public class WasteServlet extends HttpServlet {
+
     private static final String DB_URL = "jdbc:derby://localhost:1527/WasteManagement";
     private static final String DB_USER = "app";
     private static final String DB_PASS = "app";
@@ -27,11 +29,11 @@ public class WasteServlet extends HttpServlet {
         String action = request.getParameter("action");
 
         if ("add".equals(action)) {
-            addWaste(request, userId);
+            addWaste(request, response, userId); // Pass response to handle redirection
         } else if ("delete".equals(action)) {
             deleteWaste(request, userId);
+            response.sendRedirect("waste.jsp");
         }
-        response.sendRedirect("waste.jsp");
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -47,7 +49,7 @@ public class WasteServlet extends HttpServlet {
         request.getRequestDispatcher("waste.jsp").forward(request, response);
     }
 
-    private void addWaste(HttpServletRequest request, int userId) {
+    private void addWaste(HttpServletRequest request, HttpServletResponse response, int userId) throws IOException {
         String type = request.getParameter("type");
         int quantity = Integer.parseInt(request.getParameter("quantity"));
         String disposalMethod = request.getParameter("disposalMethod");
@@ -55,24 +57,27 @@ public class WasteServlet extends HttpServlet {
         String sql = "INSERT INTO Waste (type, quantity, disposalMethod, user_id) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, type);
             stmt.setInt(2, quantity);
             stmt.setString(3, disposalMethod);
-            stmt.setInt(4, userId); // Use session-stored user ID
+            stmt.setInt(4, userId);
             stmt.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        // Redirect after the database operation is complete
+        response.sendRedirect("waste.jsp?success=true");
     }
 
     private void deleteWaste(HttpServletRequest request, int userId) {
         int id = Integer.parseInt(request.getParameter("id"));
 
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-             PreparedStatement stmt = conn.prepareStatement("DELETE FROM Waste WHERE id = ? AND user_id = ?")) {
+                PreparedStatement stmt = conn.prepareStatement("DELETE FROM Waste WHERE id = ? AND user_id = ?")) {
 
             stmt.setInt(1, id);
             stmt.setInt(2, userId); // Ensure only the owner can delete
@@ -87,7 +92,7 @@ public class WasteServlet extends HttpServlet {
         List<Waste> wasteList = new ArrayList<>();
 
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Waste WHERE user_id = ?")) {
+                PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Waste WHERE user_id = ?")) {
 
             stmt.setInt(1, userId);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -100,6 +105,7 @@ public class WasteServlet extends HttpServlet {
                     ));
                 }
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
