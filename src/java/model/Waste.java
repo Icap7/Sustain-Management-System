@@ -7,6 +7,7 @@ public class Waste implements Serializable {
     private String type;
     private int quantity;
     private String disposalMethod;
+    private int user_id;
 
     public Waste() {}
 
@@ -33,6 +34,11 @@ public class Waste implements Serializable {
         this.type = type;
     }
 
+    public void setUserID(int user_id) {
+        this.user_id = user_id;
+    }
+    
+
     public int getQuantity() {
         return quantity;
     }
@@ -48,4 +54,9 @@ public class Waste implements Serializable {
     public void setDisposalMethod(String disposalMethod) {
         this.disposalMethod = disposalMethod;
     }
+
+    public int getUserID() {
+        return user_id;
+    }
+    
 }

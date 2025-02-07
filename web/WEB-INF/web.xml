@@ -4,9 +4,25 @@
         <servlet-name>WasteServlet</servlet-name>
         <servlet-class>WasteServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CalculateServlet</servlet-name>
+        <servlet-class>CalculateServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>WasteRecordsServlet</servlet-name>
+        <servlet-class>WasteRecordsServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>WasteServlet</servlet-name>
         <url-pattern>/WasteServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CalculateServlet</servlet-name>
+        <url-pattern>/CalculateServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>WasteRecordsServlet</servlet-name>
+        <url-pattern>/WasteRecordsServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

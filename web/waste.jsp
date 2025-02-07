@@ -1,78 +1,114 @@
-<%@page import="java.util.ArrayList"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="java.util.List" %>
-<%@ page import="model.Waste" %>
+<%@ page import="javax.servlet.http.HttpSession" %>
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Waste Management System</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" 
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-</head>
-<body>
-    <div class="container">
-        <h2 class="text-center text-primary">Waste Management System</h2>
 
-        <!-- Waste Entry Form -->
-        <form action="WasteServlet" method="post">
-            <input type="hidden" name="action" value="add">
-            <div class="form-group">
-                <label>Waste Type:</label>
-                <input type="text" name="type" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label>Quantity (kg):</label>
-                <input type="number" name="quantity" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label>Disposal Method:</label>
-                <select name="disposalMethod" class="form-control">
-                    <option value="Recycling">Recycling</option>
-                    <option value="Composting">Composting</option>
-                    <option value="Incineration">Incineration</option>
-                    <option value="Landfill">Landfill</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-
-        <h2 class="mt-4">Waste Records</h2>
-
-        <!-- Waste Records Table -->
-        <%
-            List<Waste> wasteList = (List<Waste>) request.getAttribute("wasteList");
-            if (wasteList == null) {
-                wasteList = new ArrayList<Waste>(); // Prevents NullPointerException
+    <head>
+        <title>Waste Management System</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <style>
+            body {
+                background-color: #f8f9fa;
             }
 
-            if (!wasteList.isEmpty()) {
-        %>
-        <table class="table">
-            <tr>
-                <th>Type</th>
-                <th>Quantity (kg)</th>
-                <th>Disposal Method</th>
-                <th>Action</th>
-            </tr>
-            <% for (Waste waste : wasteList) { %>
-            <tr>
-                <td><%= waste.getType() %></td>
-                <td><%= waste.getQuantity() %></td>
-                <td><%= waste.getDisposalMethod() %></td>
-                <td>
-                    <form action="WasteServlet" method="post">
-                        <input type="hidden" name="action" value="delete">
-                        <input type="hidden" name="id" value="<%= waste.getId() %>">
-                        <button type="submit" class="btn btn-delete">Delete</button>
-                    </form>
-                </td>
-            </tr>
-            <% } %>
-        </table>
-        <% } else { %>
-            <p>No waste records available.</p>
-        <% } %>
-    </div>
-</body>
+            .card {
+                border-radius: 12px;
+            }
+
+            .card-header {
+                background: linear-gradient(135deg, #007bff, #0056b3);
+                color: white;
+                font-size: 22px;
+                font-weight: bold;
+            }
+
+            .btn-primary, .btn-info, .btn-secondary {
+                font-size: 18px;
+                font-weight: bold;
+                padding: 10px 15px;
+                border-radius: 8px;
+                width: 100%;
+            }
+
+            .btn-primary:hover {
+                background-color: #004085;
+            }
+
+            .btn-info:hover {
+                background-color: #0062cc;
+            }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+            }
+
+            .button-group {
+                display: flex;
+                gap: 10px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card shadow-lg">
+                        <div class="card-header text-center">
+                            Waste Management System
+                        </div>
+                        <div class="card-body">
+
+                            <!-- Check if user is logged in -->
+                            <%
+                                HttpSession sessionUser = request.getSession(false);
+                                Integer userId = (sessionUser != null) ? (Integer) sessionUser.getAttribute("id") : null;
+
+                                if (userId == null) {
+                                    response.sendRedirect("login.jsp?error=Please+login+first");
+                                    return;
+                                }
+                            %>
+
+                            <!-- Waste Entry Form -->
+                            <form action="WasteServlet" method="post">
+                                <input type="hidden" name="action" value="add">
+                                <div class="mb-3">
+                                    <label class="form-label">Waste Type:</label>
+                                    <input type="text" name="type" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Quantity (kg):</label>
+                                    <input type="number" name="quantity" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Disposal Method:</label>
+                                    <select name="disposalMethod" class="form-select">
+                                        <option value="Recycling">Recycling</option>
+                                        <option value="Composting">Composting</option>
+                                        <option value="Incineration">Incineration</option>
+                                        <option value="Landfill">Landfill</option>
+                                    </select>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary">Submit Waste Entry</button>
+                                </div>
+                            </form>
+
+                            <!-- Button Section -->
+                            <div class="text-center mt-3 button-group">
+                                <a href="WasteRecordsServlet" class="btn btn-info">View Waste Records</a>
+                                <a href="index.jsp" class="btn btn-secondary">Back to Home</a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bootstrap JS (Optional) -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    </body>
 </html>

@@ -66,7 +66,7 @@
             <div class="result-section">
                 <h2>Your Carbon Footprint</h2>
                 <p><strong><%= df.format(Double.parseDouble(carbonFootprint)) %></strong> tCO₂</p>
-                <p><strong>£<%= df.format(Double.parseDouble(cost)) %></strong></p>
+                <p><strong>RM<%= df.format(Double.parseDouble(cost)) %></strong></p>
             </div>
         <% } %>
 

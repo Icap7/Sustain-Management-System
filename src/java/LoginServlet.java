@@ -46,7 +46,7 @@ public class LoginServlet extends HttpServlet {
         }
 
         // Query to check if user exists
-        String query = "SELECT * FROM users WHERE email = ? AND password = ? AND role = ?";
+        String query = "SELECT id, name FROM users WHERE email = ? AND password = ? AND role = ?";
 
         try (
             Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
@@ -58,11 +58,16 @@ public class LoginServlet extends HttpServlet {
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    // Login successful: create a session
+                    // Retrieve user ID
+                    int userId = resultSet.getInt("id");
+                    String userName = resultSet.getString("name");
+
+                    // Create session and store user details
                     HttpSession session = request.getSession();
+                    session.setAttribute("id", userId);  // Store user ID
                     session.setAttribute("role", role);
                     session.setAttribute("email", email);
-                    session.setAttribute("user", resultSet.getString("name")); // Assuming 'name' is a column
+                    session.setAttribute("user", userName);
 
                     // Redirect based on role
                     if ("admin".equalsIgnoreCase(role)) {
