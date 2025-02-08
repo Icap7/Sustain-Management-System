@@ -62,11 +62,11 @@
                                 <input type="hidden" name="action" value="add">
                                 <div class="mb-3">
                                     <label class="form-label">Waste Type:</label>
-                                    <input type="text" name="type" class="form-control" required>
+                                    <input type="text" name="type" id="wasteType" class="form-control" required>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Quantity (kg):</label>
-                                    <input type="number" name="quantity" class="form-control" required>
+                                    <input type="number" name="quantity" id="quantity" class="form-control" required>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Disposal Method:</label>
@@ -77,6 +77,13 @@
                                         <option value="Landfill">Landfill</option>
                                     </select>
                                 </div>
+                                
+                                <!-- Recycling Calculator -->
+                                <div class="mb-3" id="recyclingCalculator" style="display: none;">
+                                    <label class="form-label">Earnings (RM):</label>
+                                    <input type="text" id="earnings" class="form-control" readonly>
+                                </div>
+                                
                                 <div class="text-center">
                                     <button type="submit" class="btn btn-primary">Submit Waste Entry</button>
                                 </div>
@@ -108,6 +115,26 @@
                     text: 'Waste entry added successfully.',
                     confirmButtonColor: '#007bff'
                 });
+            }
+
+            // Recycling Calculator Script
+            document.getElementById("wasteType").addEventListener("input", updateEarnings);
+            document.getElementById("quantity").addEventListener("input", updateEarnings);
+
+            function updateEarnings() {
+                const wasteType = document.getElementById("wasteType").value.toLowerCase();
+                const quantity = parseFloat(document.getElementById("quantity").value);
+                const calculatorDiv = document.getElementById("recyclingCalculator");
+                const earningsField = document.getElementById("earnings");
+
+                if (wasteType === "plastic" && !isNaN(quantity)) {
+                    const earnings = quantity * 2;
+                    earningsField.value = earnings.toFixed(2);
+                    calculatorDiv.style.display = "block";
+                } else {
+                    calculatorDiv.style.display = "none";
+                    earningsField.value = "";
+                }
             }
         </script>
 
