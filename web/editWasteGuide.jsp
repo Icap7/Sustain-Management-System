@@ -105,6 +105,6 @@
 
                 <button type="submit" class="btn btn-primary">Update Guide</button>  
             </form>  
-        </div>  
+        </div>
     </body>  
 </html>

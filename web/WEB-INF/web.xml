@@ -44,6 +44,18 @@
         <servlet-name>DeleteWasteGuideServlet</servlet-name>
         <servlet-class>DeleteWasteGuideServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ManageFootprintServlet</servlet-name>
+        <servlet-class>ManageFootprintServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteFootprintServlet</servlet-name>
+        <servlet-class>DeleteFootprintServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AdminDashboardServlet</servlet-name>
+        <servlet-class>AdminDashboardServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>WasteServlet</servlet-name>
         <url-pattern>/WasteServlet</url-pattern>
@@ -87,6 +99,18 @@
     <servlet-mapping>
         <servlet-name>DeleteWasteGuideServlet</servlet-name>
         <url-pattern>/DeleteWasteGuideServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ManageFootprintServlet</servlet-name>
+        <url-pattern>/ManageFootprintServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteFootprintServlet</servlet-name>
+        <url-pattern>/DeleteFootprintServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminDashboardServlet</servlet-name>
+        <url-pattern>/AdminDashboardServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

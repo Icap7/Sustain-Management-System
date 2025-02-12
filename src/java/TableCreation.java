@@ -1,3 +1,4 @@
+
 import java.sql.*;
 
 public class TableCreation {
@@ -8,7 +9,7 @@ public class TableCreation {
         String password = "app"; // Default password for Derby
 
         try (Connection conn = DriverManager.getConnection(url, user, password);
-             Statement stmt = conn.createStatement()) {
+                Statement stmt = conn.createStatement()) {
 
             System.out.println("Connected to Derby database successfully!");
 
@@ -40,50 +41,56 @@ public class TableCreation {
             stmt.executeUpdate(createFootprintTable);
             System.out.println("FOOTPRINT_DATA table created.");
 
-            // Create WASTE Table
+            // Create WASTE Table (Now includes PRICE column)
             String createWasteTable = "CREATE TABLE WASTE ("
                     + "ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), "
                     + "USER_ID INTEGER NOT NULL, "
                     + "TYPE VARCHAR(100) NOT NULL, "
                     + "QUANTITY INTEGER NOT NULL, "
                     + "DISPOSALMETHOD VARCHAR(100) NOT NULL, "
-                    + "FOREIGN KEY (USER_ID) REFERENCES USERS(ID) ON DELETE CASCADE)";
+                    + "PRICE DOUBLE NOT NULL, "
+                    + // Added Price Column
+                    "FOREIGN KEY (USER_ID) REFERENCES USERS(ID) ON DELETE CASCADE)";
             stmt.executeUpdate(createWasteTable);
             System.out.println("WASTE table created.");
 
-            // Create WASTE_GUIDE Table
+            // Create WASTE_GUIDE Table (Now includes USER_ID as a foreign key)
             String createWasteGuideTable = "CREATE TABLE WASTE_GUIDE ("
                     + "ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), "
                     + "WASTE_TYPE VARCHAR(100) NOT NULL, "
                     + "CATEGORY VARCHAR(100) NOT NULL, "
                     + "DISPOSAL_METHOD VARCHAR(255) NOT NULL, "
                     + "RECYCLING_INSTRUCTIONS VARCHAR(500), "
-                    + "IMAGE_PATH VARCHAR(255))";
+                    + "IMAGE_PATH VARCHAR(255), "
+                    + "USER_ID INTEGER NOT NULL, "
+                    + // Added User ID
+                    "FOREIGN KEY (USER_ID) REFERENCES USERS(ID) ON DELETE CASCADE)";
             stmt.executeUpdate(createWasteGuideTable);
             System.out.println("WASTE_GUIDE table created.");
 
             // Insert sample data into USERS table
-            stmt.executeUpdate("INSERT INTO USERS (NAME, EMAIL, PASSWORD, ROLE) VALUES " +
-                    "('Alice Johnson', 'test@gmail.com', '123', 'user')," +
-                    "('Bob Smith', 'admin@gmail.com', '123', 'admin')");
+            stmt.executeUpdate("INSERT INTO USERS (NAME, EMAIL, PASSWORD, ROLE) VALUES "
+                    + "('Alice Johnson', 'user@gmail.com', '123', 'user'),"
+                    + "('Bob Smith', 'admin@gmail.com', '123', 'admin')");
             System.out.println("Inserted sample data into USERS table.");
 
             // Insert sample data into FOOTPRINT_DATA table
-            stmt.executeUpdate("INSERT INTO FOOTPRINT_DATA (USER_ID, BIOMASS, CARBON_FOOTPRINT, COAL, COST, ELECTRICITY, HEATING_OIL, LPG, NATURAL_GAS, RENEWABLES_ELECTRICITY, RENEWABLES_NATURAL_GAS) " +
-                    "VALUES (1, 200, 5.4, 100, 20.5, 300, 50, 20, 10, 100, 50)");
+            stmt.executeUpdate("INSERT INTO FOOTPRINT_DATA (USER_ID, BIOMASS, CARBON_FOOTPRINT, COAL, COST, ELECTRICITY, HEATING_OIL, LPG, NATURAL_GAS, RENEWABLES_ELECTRICITY, RENEWABLES_NATURAL_GAS) "
+                    + "VALUES (1, 200, 5.4, 100, 20.5, 300, 50, 20, 10, 100, 50)");
             System.out.println("Inserted sample data into FOOTPRINT_DATA table.");
 
-            // Insert sample data into WASTE table
-            stmt.executeUpdate("INSERT INTO WASTE (USER_ID, TYPE, QUANTITY, DISPOSALMETHOD) " +
-                    "VALUES (1, 'Plastic', 5, 'Recycling'), (2, 'Paper', 3, 'Recycling')");
+            // Insert sample data into WASTE table (Now includes PRICE calculation)
+            stmt.executeUpdate("INSERT INTO WASTE (USER_ID, TYPE, QUANTITY, DISPOSALMETHOD, PRICE) "
+                    + "VALUES (1, 'Plastic', 5, 'Recycling', 5 * 2), "
+                    +"(2, 'Paper', 3, 'Recycling', 3 * 2)");
             System.out.println("Inserted sample data into WASTE table.");
 
-            // Insert sample data into WASTE_GUIDE table
-            stmt.executeUpdate("INSERT INTO WASTE_GUIDE (WASTE_TYPE, CATEGORY, DISPOSAL_METHOD, RECYCLING_INSTRUCTIONS, IMAGE_PATH) VALUES " +
-                    "('Plastic', 'Recyclable', 'Recycle Bin', 'Ensure plastic is clean before recycling.', 'uploads/1739346544219_cycling.jpg')," +
-                    "('Paper', 'Recyclable', 'Paper Bin', 'Do not mix with contaminated paper.', 'uploads/1739345336073_photo_2024-09-23_22-11-45.jpg')," +
-                    "('Glass', 'Recyclable', 'Glass Bin', 'Remove lids before disposal.', 'uploads/1739345178506_football.jpg')," +
-                    "('Batteries', 'Hazardous', 'Hazardous Waste Collection', 'Drop off at designated recycling centers.', 'uploads/1739344727909_football.jpg')");
+            // Insert sample data into WASTE_GUIDE table (Now includes USER_ID)
+            stmt.executeUpdate("INSERT INTO WASTE_GUIDE (WASTE_TYPE, CATEGORY, DISPOSAL_METHOD, RECYCLING_INSTRUCTIONS, IMAGE_PATH, USER_ID) VALUES "
+                    + "('Plastic', 'Recyclable', 'Recycle Bin', 'Ensure plastic is clean before recycling.', 'uploads/1739346544219_cycling.jpg', 1),"
+                    + "('Paper', 'Recyclable', 'Paper Bin', 'Do not mix with contaminated paper.', 'uploads/1739345336073_photo_2024-09-23_22-11-45.jpg', 1),"
+                    + "('Glass', 'Recyclable', 'Glass Bin', 'Remove lids before disposal.', 'uploads/1739345178506_football.jpg', 2),"
+                    + "('Batteries', 'Hazardous', 'Hazardous Waste Collection', 'Drop off at designated recycling centers.', 'uploads/1739344727909_football.jpg', 2)");
             System.out.println("Inserted sample data into WASTE_GUIDE table.");
 
             System.out.println("All tables created and sample data inserted successfully!");

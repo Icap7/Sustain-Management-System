@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.List" %>
-<%@ page import="model.Users" %> <!-- Adjust package name as needed -->
+<%@ page import="model.Users" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -8,17 +8,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Manage Users</title>
         <link rel="stylesheet" href="style.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" crossorigin="anonymous">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     </head>
     <body>
         <div class="d-flex">
             <%@ include file="sidebar.jsp" %>
 
-
             <!-- Main Content -->
-            <div class="container-fluid p-4">
+            <div class="container-fluid p-4" style="margin-left: 260px; width: calc(100% - 260px);">
                 <header class="page-header">
                     <h1>Manage Users</h1>
                     <p>Admin can edit or delete users from the system.</p>
@@ -37,7 +35,6 @@
                     <tbody>
                         <%
                             List<Users> userList = (List<Users>) request.getAttribute("userList");
-                            System.out.println("Line 48 " + userList);
                             if (userList != null) {
                                 for (Users user : userList) {
                         %>
@@ -68,10 +65,7 @@
             </div>
         </div>
 
-        <%@ include file="footer.jsp" %>  
-
         <script>
-            // Check for delete or update success message from the servlet
             const urlParams = new URLSearchParams(window.location.search);
 
             if (urlParams.get('deleteSuccess') === 'true') {
@@ -99,10 +93,7 @@
                 });
             }
 
-            // Remove query parameters after showing the alert
             window.history.replaceState({}, document.title, window.location.pathname);
         </script>
-
-
     </body>
 </html>

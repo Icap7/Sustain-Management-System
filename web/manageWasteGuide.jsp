@@ -31,14 +31,21 @@
 
         <!-- SweetAlert -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    </head>
 
+        <style>
+            .main-content {
+                margin-left: 250px; /* Same width as sidebar */
+                padding: 20px;
+                width: calc(100% - 250px); /* Adjust width to fit */
+            }
+        </style>
+    </head>
     <body>
         <div class="d-flex">
             <%@ include file="sidebar.jsp" %>
 
             <!-- Main Content -->
-            <div class="container-fluid p-4">
+            <div class="main-content">
                 <header class="page-header">
                     <h1>Manage Waste Guide</h1>
                     <p>Admin can add and view waste segregation guides.</p>
@@ -150,8 +157,5 @@
 
         <!-- Bootstrap 5 JS (with Popper) -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
-
-        <%@ include file="footer.jsp" %>
     </body>
-
 </html>

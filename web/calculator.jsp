@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
 <%@ page import="java.text.DecimalFormat" %>
 <%
     // Retrieve the result values from request attributes
@@ -8,69 +8,70 @@
 %>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Carbon Footprint Calculator</title>
-    <link rel="stylesheet" href="calcStyle.css">
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Carbon Footprint Calculator</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body class="d-flex flex-column min-vh-100">
 
-    <!-- Navigation Menu -->
-    <nav class="menu">
-        <button onclick="location.href='calculator.jsp'">Carbon Footprint Calculator</button>
-        <button onclick="location.href='#'">Real-Time Tracker</button>
-        <button onclick="location.href='#'">Resource Management Tool</button>
-    </nav>
+        <!-- Main Content -->
+        <div class="container mt-5 flex-grow-1">
+            <header class="text-center mb-4">
+                <h1>Carbon Footprint Calculator</h1>
+            </header>
 
-    <header class="page-header">
-        <h1>Carbon Footprint Calculator</h1>
-    </header>
+            <form action="CalculateServlet" method="post" class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Electricity Usage (kWh per month):</label>
+                    <input type="number" name="electricity" class="form-control" required>
+                    <input type="number" name="renewables_electricity" class="form-control mt-2" placeholder="% Renewables">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Natural Gas (kWh per month):</label>
+                    <input type="number" name="natural_gas" class="form-control">
+                    <input type="number" name="renewables_natural_gas" class="form-control mt-2" placeholder="% Renewables">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Biomass (kg per month):</label>
+                    <input type="number" name="biomass" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Coal (kg per month):</label>
+                    <input type="number" name="coal" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Heating Oil (litres per month):</label>
+                    <input type="number" name="heating_oil" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">LPG (kg per month):</label>
+                    <input type="number" name="lpg" class="form-control">
+                </div>
+                <div class="col-12 text-center">
+                    <button type="submit" class="btn btn-primary">Calculate</button>
+                    <button type="reset" class="btn btn-secondary">Reset</button>
+                    <a href="index.jsp" class="btn btn-outline-success">Back to Home</a>
+                </div>
+            </form>
 
-    <main class="calculator-container">
-        <form action="CalculateServlet" method="post">
-            <div class="form-group">
-                <label>Electricity Usage (kWh per month):</label>
-                <input type="number" name="electricity" required>
-                <input type="number" name="renewables_electricity" placeholder="% Renewables">
-            </div>
-            <div class="form-group">
-                <label>Natural Gas (kWh per month):</label>
-                <input type="number" name="natural_gas">
-                <input type="number" name="renewables_natural_gas" placeholder="% Renewables">
-            </div>
-            <div class="form-group">
-                <label>Biomass (kg per month):</label>
-                <input type="number" name="biomass">
-            </div>
-            <div class="form-group">
-                <label>Coal (kg per month):</label>
-                <input type="number" name="coal">
-            </div>
-            <div class="form-group">
-                <label>Heating Oil (litres per month):</label>
-                <input type="number" name="heating_oil">
-            </div>
-            <div class="form-group">
-                <label>LPG (kg per month):</label>
-                <input type="number" name="lpg">
-            </div>  
-
-            <div class="button-group">
-                <button type="submit" id="calculate-button">Calculate</button><br>
-                <button type="reset" id="reset-button">Reset</button>
-            </div>
-        </form>
-
-        <!-- Display Result If Available -->
-        <% if (!carbonFootprint.isEmpty() && !cost.isEmpty()) { %>
-            <div class="result-section">
+            <% if (!carbonFootprint.isEmpty() && !cost.isEmpty()) {%>
+            <div class="mt-4 p-4 bg-light text-center rounded">
                 <h2>Your Carbon Footprint</h2>
-                <p><strong><%= df.format(Double.parseDouble(carbonFootprint)) %></strong> tCO₂</p>
-                <p><strong>RM<%= df.format(Double.parseDouble(cost)) %></strong></p>
+                <p><strong><%= df.format(Double.parseDouble(carbonFootprint))%></strong> tCO₂</p>
+                <p><strong>RM<%= df.format(Double.parseDouble(cost))%></strong></p>
             </div>
-        <% } %>
+            <% }%>
+        </div>
 
-    </main>
+        <!-- Footer -->
+        <footer class="bg-dark text-white text-center py-3 mt-auto">
+            <div class="container">
+                <p class="mb-0">© 2024 Sustainability Management System. All rights reserved.</p>
+            </div>
+        </footer>
 
-</body>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
 </html>

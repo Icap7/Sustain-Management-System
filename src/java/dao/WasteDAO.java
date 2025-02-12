@@ -83,6 +83,7 @@ public class WasteDAO {
                         rs.getInt("user_id")
                 ));
             }
+            System.out.println("Waste List Size : " + wasteList.size());
 
         } catch (Exception e) {
             e.printStackTrace();

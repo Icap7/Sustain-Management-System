@@ -1,68 +1,47 @@
-<!-- sidebar.jsp -->  
-<style>  
-    /* Sidebar styles */  
-    .sidebar {  
-        width: 250px;  
-        background-color: #343a40;  
-        color: white;  
-        padding: 20px;  
-        min-height: 100vh;  
-        display: flex;  
-        flex-direction: column;  
-    }  
+<!-- sidebar.jsp -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    .sidebar h4 {  
-        margin-bottom: 20px;  
-        font-size: 1.5em;  
-    }  
+<nav class="d-flex flex-column bg-dark text-white vh-100 p-3 position-fixed" style="width: 250px;">
+    <h4 class="mb-4 text-center">Admin Dashboard</h4>
 
-    .sidebar .nav-link {  
-        color: #ffffff;  
-        padding: 10px 15px;  
-        font-size: 16px;  
-        border-radius: 5px;  
-        transition: background-color 0.3s;  
-    }  
+    <ul class="nav flex-column flex-grow-1">
+        <li class="nav-item">
+            <a class="nav-link text-white" href="AdminDashboardServlet">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+        </li>
 
-    .sidebar .nav-link:hover {  
-        background-color: #495057;  
-    }  
+        <li class="nav-item">
+            <a class="nav-link text-white" href="getUsersServlet">
+                <i class="bi bi-people"></i> Manage Users
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white" href="WasteGuideServlet">
+                <i class="bi bi-journal"></i> Manage Waste Segregation Guide
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white" href="WasteRecordsServlet">
+                <i class="bi bi-trash"></i> Manage Waste Records
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white" href="ManageFootprintServlet">
+                <i class="bi bi-graph-up"></i> Manage Carbon Footprint
+            </a>
+        </li>
+    </ul>
 
-    .sidebar .nav-item + .nav-item {  
-        margin-top: 10px; /* Add spacing between items */  
-    }  
-
-    /* Ensure logout button stays at the bottom */  
-    .sidebar .mt-auto {  
-        margin-top: auto;  
-    }  
-
-    .sidebar .btn-danger {  
-        margin-top: 20px; /* Add space above the logout button */  
-    }  
-</style>  
-
-<nav class="sidebar">  
-    <h4>Admin Dashboard</h4>  
-    <ul class="nav flex-column flex-grow-1">  
-        <li class="nav-item">  
-            <a class="nav-link" href="getUsersServlet">Manage Users</a>  
-        </li>  
-        <li class="nav-item">  
-            <a class="nav-link" href="WasteGuideServlet">Manage Waste Segregation Guide</a>  
-        </li>  
-        <li class="nav-item">  
-            <a class="nav-link" href="WasteRecordsServlet">Manage Waste Records</a>  
-        </li>  
-        <li class="nav-item">  
-            <a class="nav-link" href="#impact-tracker">Real-Time Impact Tracker</a>  
-        </li>  
-    </ul>  
-
-    <!-- Logout Button -->  
-    <div class="mt-auto">  
-        <form action="LogoutServlet" method="GET">  
-            <button type="submit" class="btn btn-danger btn-block">Logout</button>  
-        </form>  
-    </div>  
+    <!-- Logout Button -->
+    <div class="mt-auto">
+        <form action="LogoutServlet" method="GET">
+            <button type="submit" class="btn btn-danger w-100">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </button>
+        </form>
+    </div>
 </nav>
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">

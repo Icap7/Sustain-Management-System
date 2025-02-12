@@ -1,84 +1,155 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="javax.servlet.http.HttpSession" %>
+<%@ page import="java.util.Map" %>
+
+<%
+    HttpSession sessionUser = request.getSession(false);
+    if (sessionUser == null || !"admin".equals(sessionUser.getAttribute("role"))) {
+        response.sendRedirect("index.jsp");
+        return;
+    }
+
+    // Retrieve summary data from request attributes (provided by AdminDashboardServlet)
+    Map<String, Integer> summaryData = (Map<String, Integer>) request.getAttribute("summaryData");
+    int totalUsers = (summaryData != null) ? summaryData.getOrDefault("totalUsers", 0) : 0;
+    int totalGuides = (summaryData != null) ? summaryData.getOrDefault("totalGuides", 0) : 0;
+    int totalWasteRecords = (summaryData != null) ? summaryData.getOrDefault("totalWasteRecords", 0) : 0;
+    int totalCarbonFootprints = (summaryData != null) ? summaryData.getOrDefault("totalCarbonFootprints", 0) : 0;
+%>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Carbon Footprint Calculator</title>
-        <link rel="stylesheet" href="style.css">
-        <link rel="stylesheet" 
-              href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" 
-              integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" 
-              crossorigin="anonymous">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.2/Chart.min.js"></script>
+        <title>Admin Dashboard</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+        <style>
+            body {
+                background-color: #f4f6f9;
+            }
+            .sidebar {
+                width: 250px;
+                height: 100vh;
+                position: fixed;
+                top: 0;
+                left: 0;
+                background-color: #343a40;
+                padding-top: 20px;
+            }
+            .sidebar a {
+                color: white;
+                padding: 10px;
+                display: block;
+                text-decoration: none;
+                font-size: 18px;
+            }
+            .sidebar a:hover {
+                background-color: #495057;
+            }
+            .main-content {
+                margin-left: 250px;
+                padding: 40px 30px;
+            }
+            .dashboard-card {
+                border-radius: 12px;
+                transition: all 0.3s ease-in-out;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            .dashboard-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+            .dashboard-card .card-body {
+                text-align: center;
+                padding: 35px;
+            }
+            .dashboard-card .display-6 {
+                font-weight: 700;
+            }
+            @media (max-width: 768px) {
+                .sidebar {
+                    width: 100%;
+                    height: auto;
+                    position: relative;
+                }
+                .main-content {
+                    margin-left: 0;
+                }
+            }
+        </style>
     </head>
     <body>
-        <div class="d-flex">
+
+        <!-- Navbar -->
+        <nav class="navbar navbar-dark bg-dark d-md-none">
+            <div class="container-fluid">
+                <button class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar">
+                    <i class="bi bi-list"></i> Menu
+                </button>
+            </div>
+        </nav>
+
             <%@ include file="sidebar.jsp" %>
 
 
-            <!-- Main Content -->
-            <div class="container-fluid p-4">
-                <header class="page-header">
-                    <h1 id="impact-tracker">Real-Time Impact Tracker</h1>
-                    <p>Track real-time metrics on energy savings, waste reduction, and overall sustainability progress.</p>
-                </header>
+        <!-- Sidebar (Mobile) -->
+        <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="offcanvasSidebar">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title">Admin Menu</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+            </div>
+            <div class="offcanvas-body">
+                <%@ include file="sidebar.jsp" %>
+            </div>
+        </div>
 
-                <table class="table table-bordered">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th scope="col">No.</th>
-                            <th scope="col">Day</th>
-                            <th scope="col">Recyclable Waste</th>
-                            <th scope="col">Non-Recyclable Waste</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><th scope="row">1</th><td>Monday</td><td>9</td><td>2</td></tr>
-                        <tr><th scope="row">2</th><td>Tuesday</td><td>7</td><td>2</td></tr>
-                        <tr><th scope="row">3</th><td>Wednesday</td><td>4</td><td>5</td></tr>
-                        <tr><th scope="row">4</th><td>Thursday</td><td>7</td><td>5</td></tr>
-                        <tr><th scope="row">5</th><td>Friday</td><td>3</td><td>2</td></tr>
-                        <tr><th scope="row">6</th><td>Saturday</td><td>2</td><td>1</td></tr>
-                        <tr><th scope="row">7</th><td>Sunday</td><td>7</td><td>10</td></tr>
-                    </tbody>
-                </table>
+        <!-- Main Content -->
+        <div class="main-content">
+            <h2 class="dashboard-title">Admin Dashboard</h2>
+            <p class="dashboard-subtitle">Overview of system data and statistics.</p>
 
-                <div class="container">
-                    <h2>Waste Produced</h2>
-                    <div>
-                        <canvas id="myChart"></canvas>
-                    </div>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <a href="getUsersServlet" class="dashboard-card text-white bg-primary shadow-sm rounded d-block">
+                        <div class="card-body">
+                            <i class="bi bi-people display-6"></i>
+                            <h5 class="card-title">Total Users</h5>
+                            <p class="display-6"><%= totalUsers%></p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <a href="WasteGuideServlet" class="dashboard-card text-white bg-success shadow-sm rounded d-block">
+                        <div class="card-body">
+                            <i class="bi bi-book display-6"></i>
+                            <h5 class="card-title">Waste Guides</h5>
+                            <p class="display-6"><%= totalGuides%></p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <a href="WasteRecordsServlet" class="dashboard-card text-white bg-warning shadow-sm rounded d-block">
+                        <div class="card-body">
+                            <i class="bi bi-recycle display-6"></i>
+                            <h5 class="card-title">Waste Records</h5>
+                            <p class="display-6"><%= totalWasteRecords%></p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <a href="ManageFootprintServlet" class="dashboard-card text-white bg-danger shadow-sm rounded d-block">
+                        <div class="card-body">
+                            <i class="bi bi-cloud display-6"></i>
+                            <h5 class="card-title">Carbon Footprint Entries</h5>
+                            <p class="display-6"><%= totalCarbonFootprints%></p>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
 
-        <footer class="page-footer text-center mt-4 p-3 bg-dark text-white">
-            <p>© 2024 Sustainability Management System. All rights reserved.</p>
-        </footer>
-
-        <script>
-            let ctx = document.getElementById("myChart").getContext("2d");
-            let myChart = new Chart(ctx, {
-                type: "line",
-                data: {
-                    labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-                    datasets: [
-                        {
-                            label: "Recyclable Waste",
-                            data: [9, 7, 4, 7, 3, 2, 7],
-                            backgroundColor: "rgba(153,205,1,0.6)",
-                        },
-                        {
-                            label: "Non-Recyclable Waste",
-                            data: [2, 2, 5, 5, 2, 1, 10],
-                            backgroundColor: "rgba(155,153,10,0.6)",
-                        },
-                    ],
-                },
-            });
-        </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>
