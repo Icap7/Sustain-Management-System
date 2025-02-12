@@ -8,6 +8,8 @@
     <head>
         <title>Waste Records</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
         <style>
             body {
                 background-color: #f8f9fa;
@@ -88,6 +90,7 @@
                                     <th>Type</th>
                                     <th>Quantity (kg)</th>
                                     <th>Disposal Method</th>
+                                    <th>Price (RM)</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -97,11 +100,13 @@
                                     <td><%= waste.getType()%></td>
                                     <td><%= waste.getQuantity()%></td>
                                     <td><%= waste.getDisposalMethod()%></td>
+                                    <td><%= waste.getPrice()%></td>
                                     <td>
-                                        <form action="WasteServlet" method="post" class="d-inline">
-                                            <input type="hidden" name="action" value="delete">
+                                        <form id="deleteForm_<%= waste.getId()%>" action="WasteServlet" method="post" style="display: inline;">
+                                            <input type="hidden" name="_method" value="DELETE">
                                             <input type="hidden" name="id" value="<%= waste.getId()%>">
-                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                            <input type="hidden" name="user_id" value="<%= session.getAttribute("id")%>">
+                                            <button type="button" class="btn btn-danger" onclick="confirmDelete('<%= waste.getId()%>')">Delete</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -125,6 +130,63 @@
 
         <!-- Bootstrap JS (Optional) -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <script>
+                                                        function confirmDelete(wasteId) {
+                                                            Swal.fire({
+                                                                title: "Are you sure?",
+                                                                text: "You won't be able to recover this waste record!",
+                                                                icon: "warning",
+                                                                showCancelButton: true,
+                                                                confirmButtonColor: "#d33",
+                                                                cancelButtonColor: "#3085d6",
+                                                                confirmButtonText: "Yes, delete it!"
+                                                            }).then((result) => {
+                                                                if (result.isConfirmed) {
+                                                                    deleteWaste(wasteId);
+                                                                }
+                                                            });
+                                                        }
+
+                                                        function deleteWaste(wasteId) {
+                                                            fetch('WasteServlet?id=' + wasteId, {
+                                                                method: 'DELETE',
+                                                            })
+                                                                    .then(response => response.json())
+                                                                    .then(data => {
+                                                                        if (data.success) {
+                                                                            Swal.fire({
+                                                                                title: "Deleted!",
+                                                                                text: "Waste record has been successfully deleted.",
+                                                                                icon: "success",
+                                                                                confirmButtonColor: "#3085d6",
+                                                                                confirmButtonText: "OK"
+                                                                            }).then(() => {
+                                                                                location.reload(); // Reload the page to update records
+                                                                            });
+                                                                        } else {
+                                                                            Swal.fire({
+                                                                                title: "Error!",
+                                                                                text: "Failed to delete waste record. Please try again.",
+                                                                                icon: "error",
+                                                                                confirmButtonColor: "#d33",
+                                                                                confirmButtonText: "OK"
+                                                                            });
+                                                                        }
+                                                                    })
+                                                                    .catch(error => {
+                                                                        console.error('Error:', error);
+                                                                        Swal.fire({
+                                                                            title: "Error!",
+                                                                            text: "An unexpected error occurred.",
+                                                                            icon: "error",
+                                                                            confirmButtonColor: "#d33",
+                                                                            confirmButtonText: "OK"
+                                                                        });
+                                                                    });
+                                                        }
+        </script>
     </body>
 
 </html>

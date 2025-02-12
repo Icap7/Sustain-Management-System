@@ -68,12 +68,12 @@
             </div>
         </div>
 
-        <footer class="page-footer text-center mt-4 p-3 bg-dark text-white">
-            <p>© 2024 Sustainability Management System. All rights reserved.</p>
-        </footer>
+        <%@ include file="footer.jsp" %>  
+
         <script>
-            // Check for delete success message from the servlet
+            // Check for delete or update success message from the servlet
             const urlParams = new URLSearchParams(window.location.search);
+
             if (urlParams.get('deleteSuccess') === 'true') {
                 Swal.fire({
                     title: "Deleted!",
@@ -89,7 +89,20 @@
                     confirmButtonText: "OK"
                 });
             }
+
+            if (urlParams.get('updateSuccess') === 'true') {
+                Swal.fire({
+                    title: "Updated!",
+                    text: "User details have been updated successfully.",
+                    icon: "success",
+                    confirmButtonText: "OK"
+                });
+            }
+
+            // Remove query parameters after showing the alert
+            window.history.replaceState({}, document.title, window.location.pathname);
         </script>
+
 
     </body>
 </html>

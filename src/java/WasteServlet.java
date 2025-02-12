@@ -1,4 +1,7 @@
 
+import dao.WasteDAO;
+import model.Waste;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -6,37 +9,48 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
-import model.Waste;
 
-@WebServlet("/WasteServlet")
 public class WasteServlet extends HttpServlet {
 
-    private static final String DB_URL = "jdbc:derby://localhost:1527/WasteManagement";
-    private static final String DB_USER = "app";
-    private static final String DB_PASS = "app";
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession(false); // Retrieve existing session
+        HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("id") == null) {
             response.sendRedirect("login.jsp?error=Please+login+first");
             return;
         }
 
-        int userId = (Integer) session.getAttribute("id");
-        String action = request.getParameter("action");
+        // Check if the request is for DELETE
+        String method = request.getParameter("_method");
+        if (method != null && method.equalsIgnoreCase("DELETE")) {
+            doDelete(request, response);
+            return;
+        }
 
-        if ("add".equals(action)) {
-            addWaste(request, response, userId); // Pass response to handle redirection
-        } else if ("delete".equals(action)) {
-            deleteWaste(request, userId);
-            response.sendRedirect("waste.jsp");
+        // Default behavior for adding waste
+        try {
+            int userId = (Integer) session.getAttribute("id");
+            String type = request.getParameter("type");
+            int quantity = Integer.parseInt(request.getParameter("quantity"));
+            String disposalMethod = request.getParameter("disposalMethod");
+            double totalPrice = Double.parseDouble(request.getParameter("totalPrice"));
+
+            Waste waste = new Waste(0, type, quantity, disposalMethod, totalPrice, userId);
+            WasteDAO wasteDAO = new WasteDAO();
+
+            boolean success = wasteDAO.addWaste(waste);
+            response.sendRedirect("waste.jsp?success=" + success);
+
+        } catch (NumberFormatException e) {
+            response.sendRedirect("waste.jsp?error=Invalid+input");
         }
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("id") == null) {
             response.sendRedirect("login.jsp?error=Please+login+first");
@@ -44,71 +58,46 @@ public class WasteServlet extends HttpServlet {
         }
 
         int userId = (Integer) session.getAttribute("id");
-        List<Waste> wasteList = getAllWaste(userId);
+        WasteDAO wasteDAO = new WasteDAO();
+        List<Waste> wasteList = wasteDAO.getAllWasteByUser(userId);
+
         request.setAttribute("wasteList", wasteList);
         request.getRequestDispatcher("waste.jsp").forward(request, response);
     }
 
-    private void addWaste(HttpServletRequest request, HttpServletResponse response, int userId) throws IOException {
-        String type = request.getParameter("type");
-        int quantity = Integer.parseInt(request.getParameter("quantity"));
-        String disposalMethod = request.getParameter("disposalMethod");
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
 
-        String sql = "INSERT INTO Waste (type, quantity, disposalMethod, user_id) VALUES (?, ?, ?, ?)";
-
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, type);
-            stmt.setInt(2, quantity);
-            stmt.setString(3, disposalMethod);
-            stmt.setInt(4, userId);
-            stmt.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("id") == null) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Please log in first.");
+            return;
         }
 
-        // Redirect after the database operation is complete
-        response.sendRedirect("waste.jsp?success=true");
-    }
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
-    private void deleteWaste(HttpServletRequest request, int userId) {
-        int id = Integer.parseInt(request.getParameter("id"));
+        try {
+            int id = Integer.parseInt(request.getParameter("id"));
+            int userId = (Integer) session.getAttribute("id");
+            String role = (String) session.getAttribute("role"); // Get user role
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-                PreparedStatement stmt = conn.prepareStatement("DELETE FROM Waste WHERE id = ? AND user_id = ?")) {
+            WasteDAO wasteDAO = new WasteDAO();
+            boolean success;
 
-            stmt.setInt(1, id);
-            stmt.setInt(2, userId); // Ensure only the owner can delete
-            stmt.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private List<Waste> getAllWaste(int userId) {
-        List<Waste> wasteList = new ArrayList<>();
-
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-                PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Waste WHERE user_id = ?")) {
-
-            stmt.setInt(1, userId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    wasteList.add(new Waste(
-                            rs.getInt("id"),
-                            rs.getString("type"),
-                            rs.getInt("quantity"),
-                            rs.getString("disposalMethod")
-                    ));
-                }
+            if ("admin".equals(role)) {
+                // Admin can delete any record
+                success = wasteDAO.deleteWasteByAdmin(id);
+            } else {
+                // Normal users can only delete their own records
+                success = wasteDAO.deleteWaste(id, userId);
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+            response.getWriter().write("{\"success\": " + success + "}");
+
+        } catch (NumberFormatException e) {
+            response.getWriter().write("{\"success\": false}");
         }
-        return wasteList;
     }
+
 }

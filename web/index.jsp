@@ -156,6 +156,23 @@
         <footer class="text-center bg-dark text-light py-3">
             <p>&copy; 2024 Sustainability Management System. All Rights Reserved.</p>
         </footer>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <script>
+            // Check for logout success message
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('logoutSuccess') === 'true') {
+                Swal.fire({
+                    title: "Logged Out!",
+                    text: "You have successfully logged out.",
+                    icon: "success",
+                    confirmButtonText: "OK"
+                }).then(() => {
+                    // Remove the parameter from the URL after showing the alert
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                });
+            }
+        </script>
 
         <!-- Bootstrap JavaScript -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

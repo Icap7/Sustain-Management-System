@@ -12,10 +12,21 @@ public class LogoutServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    private void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate(); // Destroy session
         }
-        response.sendRedirect("index.jsp"); // Redirect to home page
+        response.sendRedirect("index.jsp?logoutSuccess=true"); // Redirect with success flag
     }
+
 }

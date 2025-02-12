@@ -12,15 +12,18 @@
             body {
                 background-color: #f8f9fa;
             }
+
             .card {
                 border-radius: 12px;
             }
+
             .card-header {
                 background: linear-gradient(135deg, #007bff, #0056b3);
                 color: white;
                 font-size: 22px;
                 font-weight: bold;
             }
+
             .btn-primary, .btn-info, .btn-secondary {
                 font-size: 18px;
                 font-weight: bold;
@@ -28,6 +31,7 @@
                 border-radius: 8px;
                 width: 100%;
             }
+
             .button-group {
                 display: flex;
                 gap: 10px;
@@ -60,14 +64,30 @@
                             <!-- Waste Entry Form -->
                             <form action="WasteServlet" method="post">
                                 <input type="hidden" name="action" value="add">
+
+                                <!-- Waste Type Dropdown -->
                                 <div class="mb-3">
                                     <label class="form-label">Waste Type:</label>
-                                    <input type="text" name="type" id="wasteType" class="form-control" required>
+                                    <select name="type" id="wasteType" class="form-select" required>
+                                        <option value="" selected disabled>Select Waste Type</option>
+                                        <option value="newspaper" data-price="0.24">Newspaper - RM 0.24/kg</option>
+                                        <option value="box" data-price="0.22">Box - RM 0.22/kg</option>
+                                        <option value="magazine" data-price="0.22">Magazine - RM 0.22/kg</option>
+                                        <option value="aluminium" data-price="3.00">Aluminium Can/Stainless Steel - RM 3.00/kg</option>
+                                        <option value="car-battery" data-price="1.00">Car Battery - RM 1.00/kg</option>
+                                        <option value="plastic" data-price="0.40">Plastic - RM 0.40/kg</option>
+                                        <option value="computer" data-price="4.00" data-unit="true">Computer - RM 4.00/unit</option>
+                                        <option value="cooking-oil" data-price="0.80">Used Cooking Oil - RM 0.80/kg</option>
+                                    </select>
                                 </div>
+
+                                <!-- Quantity Input -->
                                 <div class="mb-3">
-                                    <label class="form-label">Quantity (kg):</label>
+                                    <label class="form-label">Quantity (kg or unit):</label>
                                     <input type="number" name="quantity" id="quantity" class="form-control" required>
                                 </div>
+
+                                <!-- Disposal Method Dropdown -->
                                 <div class="mb-3">
                                     <label class="form-label">Disposal Method:</label>
                                     <select name="disposalMethod" class="form-select">
@@ -77,13 +97,17 @@
                                         <option value="Landfill">Landfill</option>
                                     </select>
                                 </div>
-                                
-                                <!-- Recycling Calculator -->
+
+                                <!-- Hidden Input to Store Total Price -->
+                                <input type="hidden" name="totalPrice" id="totalPrice">
+
+                                <!-- Earnings Calculation Display -->
                                 <div class="mb-3" id="recyclingCalculator" style="display: none;">
                                     <label class="form-label">Earnings (RM):</label>
                                     <input type="text" id="earnings" class="form-control" readonly>
                                 </div>
-                                
+
+
                                 <div class="text-center">
                                     <button type="submit" class="btn btn-primary">Submit Waste Entry</button>
                                 </div>
@@ -118,24 +142,31 @@
             }
 
             // Recycling Calculator Script
-            document.getElementById("wasteType").addEventListener("input", updateEarnings);
+            document.getElementById("wasteType").addEventListener("change", updateEarnings);
             document.getElementById("quantity").addEventListener("input", updateEarnings);
 
             function updateEarnings() {
-                const wasteType = document.getElementById("wasteType").value.toLowerCase();
+                const wasteTypeDropdown = document.getElementById("wasteType");
+                const selectedOption = wasteTypeDropdown.options[wasteTypeDropdown.selectedIndex];
+                const pricePerKgOrUnit = parseFloat(selectedOption.getAttribute("data-price"));
+                const isUnitBased = selectedOption.getAttribute("data-unit") === "true";
                 const quantity = parseFloat(document.getElementById("quantity").value);
                 const calculatorDiv = document.getElementById("recyclingCalculator");
                 const earningsField = document.getElementById("earnings");
+                const totalPriceField = document.getElementById("totalPrice"); // Hidden field
 
-                if (wasteType === "plastic" && !isNaN(quantity)) {
-                    const earnings = quantity * 2;
+                if (!isNaN(pricePerKgOrUnit) && !isNaN(quantity)) {
+                    const earnings = pricePerKgOrUnit * quantity;
                     earningsField.value = earnings.toFixed(2);
+                    totalPriceField.value = earnings.toFixed(2); // Store calculated price in hidden field
                     calculatorDiv.style.display = "block";
                 } else {
                     calculatorDiv.style.display = "none";
                     earningsField.value = "";
+                    totalPriceField.value = "0"; // Reset total price
                 }
             }
+
         </script>
 
     </body>
