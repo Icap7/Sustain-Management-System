@@ -162,7 +162,7 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update User</button>
-                <a href="adminDashboard.jsp" class="btn btn-secondary mt-2"><i class="fas fa-times"></i> Cancel</a>
+                <a href="AdminDashboardServlet" class="btn btn-secondary mt-2"><i class="fas fa-times"></i> Cancel</a>
             </form>
         </div>
     </body>

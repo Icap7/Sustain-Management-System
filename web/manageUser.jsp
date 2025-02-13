@@ -17,9 +17,13 @@
 
             <!-- Main Content -->
             <div class="container-fluid p-4" style="margin-left: 260px; width: calc(100% - 260px);">
-                <header class="page-header">
-                    <h1>Manage Users</h1>
-                    <p>Admin can edit or delete users from the system.</p>
+                <header class="page-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1>Manage Users</h1>
+                        <p>Admin can edit or delete users from the system.</p>
+                    </div>
+                    <a href="addUser.jsp" class="btn btn-primary">Add User</a>
+                 
                 </header>
 
                 <table class="table table-bordered">
@@ -67,6 +71,7 @@
 
         <script>
             const urlParams = new URLSearchParams(window.location.search);
+            
 
             if (urlParams.get('deleteSuccess') === 'true') {
                 Swal.fire({

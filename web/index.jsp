@@ -26,7 +26,7 @@
                         <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
                         <li class="nav-item"><a class="nav-link" href="#initiatives">Initiatives</a></li>
                         <li class="nav-item"><a class="nav-link" href="#functions">Functions</a></li>
-<!--                        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>-->
+                        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
                     </ul>
                 </div>
 
@@ -145,6 +145,38 @@
                     </div>
                 </div>
             </section>
+            <!-- Contact Us Section -->
+            <section id="contact" class="py-5">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-6">
+                            <div class="card shadow-lg border-0">
+                                <div class="card-body p-4">
+                                    <h3 class="text-center fw-bold mb-4">Contact Us</h3>
+                                    <form action="https://formspree.io/f/xwpkwwaw" method="post">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="firstName" name="first" placeholder="First Name" required>
+                                            <label for="firstName">First Name</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="email" class="form-control" id="email" name="email" placeholder="Email Address" required>
+                                            <label for="email">Email Address</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <textarea class="form-control" id="message" name="message" placeholder="Enter Message" rows="5" required></textarea>
+                                            <label for="message">Enter Message</label>
+                                        </div>
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-send-fill me-2"></i>Send Message</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
         </div>
 
         <%@ include file="footer.jsp" %>

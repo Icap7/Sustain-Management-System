@@ -5,7 +5,27 @@
     String carbonFootprint = request.getAttribute("carbonFootprint") != null ? request.getAttribute("carbonFootprint").toString() : "";
     String cost = request.getAttribute("cost") != null ? request.getAttribute("cost").toString() : "";
     DecimalFormat df = new DecimalFormat("#.##");
+
+    double carbonFootprintValue = 0.0;
+    double costValue = 0.0;
+
+    if (!carbonFootprint.isEmpty()) {
+        try {
+            carbonFootprintValue = Double.parseDouble(carbonFootprint);
+        } catch (NumberFormatException e) {
+            carbonFootprintValue = 0.0; // Default value to prevent error
+        }
+    }
+
+    if (!cost.isEmpty()) {
+        try {
+            costValue = Double.parseDouble(cost);
+        } catch (NumberFormatException e) {
+            costValue = 0.0; // Default value to prevent error
+        }
+    }
 %>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -30,24 +50,24 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Natural Gas (kWh per month):</label>
-                    <input type="number" name="natural_gas" class="form-control">
+                    <input type="number" name="natural_gas" class="form-control" required>
                     <input type="number" name="renewables_natural_gas" class="form-control mt-2" placeholder="% Renewables">
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Biomass (kg per month):</label>
-                    <input type="number" name="biomass" class="form-control">
+                    <input type="number" name="biomass" class="form-control" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Coal (kg per month):</label>
-                    <input type="number" name="coal" class="form-control">
+                    <input type="number" name="coal" class="form-control" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Heating Oil (litres per month):</label>
-                    <input type="number" name="heating_oil" class="form-control">
+                    <input type="number" name="heating_oil" class="form-control" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">LPG (kg per month):</label>
-                    <input type="number" name="lpg" class="form-control">
+                    <input type="number" name="lpg" class="form-control" required>
                 </div>
                 <div class="col-12 text-center">
                     <button type="submit" class="btn btn-primary">Calculate</button>
@@ -56,11 +76,12 @@
                 </div>
             </form>
 
-            <% if (!carbonFootprint.isEmpty() && !cost.isEmpty()) {%>
+            <% if (carbonFootprintValue > 0 || costValue > 0) {%>
+
             <div class="mt-4 p-4 bg-light text-center rounded">
                 <h2>Your Carbon Footprint</h2>
-                <p><strong><%= df.format(Double.parseDouble(carbonFootprint))%></strong> tCO₂</p>
-                <p><strong>RM<%= df.format(Double.parseDouble(cost))%></strong></p>
+                <p><strong><%= df.format(carbonFootprintValue)%></strong> tCO₂</p>
+                <p><strong>RM<%= df.format(costValue)%></strong></p>
             </div>
             <% }%>
         </div>
